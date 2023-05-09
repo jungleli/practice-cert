@@ -1,4 +1,4 @@
-# 自签名ssl证书生成
+# mTLS模型中 自签名ssl证书生成
 
 ## 生成CA私钥
 
@@ -29,7 +29,8 @@ openssl req -x509 -new -nodes -key myCA.key -sha256 -days 3600 -out myCA.crt
 > 查看证书信息命令 openssl x509 -in myCA.crt -noout -text
 
 
-## 创建ssl证书私钥
+## 生成server端证书
+### 创建ssl证书私钥
 
 ```shell
 openssl genrsa -out localhost.key 2048
@@ -44,14 +45,14 @@ Generating RSA private key, 2048 bit long modulus
 e is 65537 (0x10001)
 ```
 
-## 创建ssl证书CSR
+### 创建ssl证书CSR
 
 ```shell
 openssl req -new -sha256 -key localhost.key -out localhost.csr
 ```
 > CN 需要和域名保持一致
 
-## 创建域名附加配置文件
+### 创建域名附加配置文件
 
 新建文件`cert.ext` 输入如下内容保存
 
@@ -69,7 +70,7 @@ DNS.4 = *.test.com
 ```
 
 
-## 使用CA签署ssl证书
+### 使用CA签署ssl证书
 
 ```shell
 openssl x509 -req -in localhost.csr -out localhost.crt -days 365 \
@@ -87,10 +88,25 @@ Getting CA Private Key
 Enter pass phrase for myCA.key:
 ```
 
-## 其它
+### 其它
 
 查看签署的证书信息
 openssl x509 -in localhost.crt -noout -text
 
 使用CA验证一下证书是否通过
 openssl verify -CAfile ../ca/myCA.crt localhost.crt
+
+## 重复server端证书生成方式，生成client端证书
+
+## 本地配置https server，此处以服务端用node server模拟，client端用curl模拟
+代码在server.js中，启动server
+```
+node server.js
+```
+
+模拟client端：
+
+```
+curl --cert client.crt --key client.key  https://localhost:9443
+```
+
