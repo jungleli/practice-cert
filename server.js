@@ -8,7 +8,7 @@ https
       key: fs.readFileSync('localhost.key'),
       requestCert: true,
       rejectUnauthorized: false,
-      ca: fs.readFileSync('myCA.crt'),
+      ca: fs.readFileSync('clientCA.crt'),
     },
     (req, res) => {
         if (!req.client.authorized) {
