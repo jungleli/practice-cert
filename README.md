@@ -106,7 +106,8 @@ node server.js
 
 模拟client端：
 
+需要指定服务端用于签名的CA证书，用来验证服务端证书的有效性，同样，在服务端需要指定客户端用于签名的证书。
 ```
-curl --cert client.crt --key client.key  https://localhost:9443
+curl --cert client.crt --key client.key --cacert myCA.crt  https://localhost:9443
 ```
 
